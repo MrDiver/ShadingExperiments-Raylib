@@ -1,0 +1,3 @@
+### Config options ###
+
+option(USE_RAYGUI "Download and include Raygui" ON)
