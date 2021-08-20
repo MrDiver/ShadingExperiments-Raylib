@@ -25,15 +25,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 if(${USE_RAYGUI})
     add_compile_definitions(USE_RAYGUI)
     include(ExternalProject)
-
-    ExternalProject_Add(raygui
-        GIT_REPOSITORY "https://github.com/raysan5/raygui"
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/external/raygui"
-        SOURCE_SUBDIR "projects/CMake"
-        CMAKE_ARGS
-            -DBUILD_RAYGUI_EXAMPLES=OFF
-            -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}
-    )
+    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/raygui")
+        ExternalProject_Add(raygui
+            GIT_REPOSITORY "https://github.com/raysan5/raygui"
+            SOURCE_DIR "${PROJECT_SOURCE_DIR}/external/raygui"
+            SOURCE_SUBDIR "projects/CMake"
+            CMAKE_ARGS
+                -DBUILD_RAYGUI_EXAMPLES=OFF
+                -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}
+        )
+    endif()
 endif()
 
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
