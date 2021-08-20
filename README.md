@@ -1,9 +1,20 @@
-# Raylib Template Project
+# Shading Experiments
+
+## 1. Phong Shader
+
+The Phong shading technique is build on a basis of relatively simple mathematics. In the following pictures you can see a demonstration wha Phong shading can look like.
+
+![dark background with four lit spheres](example_images/dark.png)
+![Flying spheres with red lighting and checkerboard texture](example_images/checker.png)
+
+---
+
+# Configuration
 
 ```sh
 # Getting the Project ready
-git clone https://github.com/MrDiver/RaylibTemplateProject
-cd RaylibTemplateProject
+git clone https://github.com/MrDiver/ShadingExperiments-Raylib.git
+cd ShadingExperiments-Raylib
 mkdir build
 cmake ..
 make
@@ -12,19 +23,4 @@ make
 ```sh
 # Running the project
 ./dist/rlProgram
-```
-
-## Resource folder
-The resource folder `dist/res` can automatically be accessed with a relative path like `"res/shaders/base.vs"` from the Program.
-```cpp
-// Basic Example
-Shader s = LoadShader("res/shaders/base.vs","res/shaders/lighting.fs");
-```
-
-## Options
-
-You can supply an option to the cmake script if you don't want Raygui to be downloaded and added.
-
-```sh
-cmake .. -DUSE_RAYGUI=OFF
 ```
