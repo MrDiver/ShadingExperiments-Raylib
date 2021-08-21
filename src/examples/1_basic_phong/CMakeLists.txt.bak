@@ -1,0 +1,27 @@
+# project(1_basic_phong)
+
+# set(LOCAL_PROJECT_NAME ${PROJECT_NAME})
+
+# set(SOURCE_FILES
+#     base_phong.cpp
+# )
+
+# set(HEADER_FILES
+#     GUI/GuiMain.h
+# )
+
+# set(RESOURCE_FILES
+#     res/shader/basic_lighting.vs
+#     res/shader/phong.fs
+# )
+
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOCAL_PROJECT_NAME})
+# add_executable(${LOCAL_PROJECT_NAME} ${SOURCE_FILES})
+
+
+
+# foreach(RESOURCE ${RESOURCE_FILES})
+#     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${RESOURCE}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${RESOURCE}")
+# endforeach()
+
+# message("THIS SHOULD NOT BE IN THE CONSOLE")

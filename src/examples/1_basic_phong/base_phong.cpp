@@ -70,6 +70,10 @@ int main(int argc, char* argv[])
     plane.materials->shader=basic_shader;
     plane.materials->maps->texture=checkerTexture;
 
+    Model torus = LoadModelFromMesh(GenMeshTorus(0.4,1.0,20,80));
+    torus.materials->shader=basic_shader;
+    torus.materials->maps->texture=checkerTexture;
+
     // Setup Scene
     Camera3D cam = {
         position:{0.0f,-5.0f,10.0f},
@@ -96,14 +100,32 @@ int main(int argc, char* argv[])
                 DrawModel(sphere,{10.0f,0.0f,10.0f},0.5f,WHITE);
             EndMode3D();
         }
-        };
+    };
+
+
+    float time = GetTime();
+    Scene cube_scene = (Scene){
+        [&cam,sphere,plane,torus,&time](){
+            BeginMode3D(cam);
+                ClearBackground(BLACK);
+                DrawModel(plane,{0.0,2.0,0.0},1.0f,WHITE);
+                DrawModelEx(torus,{0.0,0.0,0.0},{1.0f,1.0f,0.0f},time*80,{1.0f,1.0f,1.0f},WHITE);
+                DrawModelEx(torus,{-4.0,0.0,0.0},{1.0f,0.0f,0.0f},time*100,{1.0f,1.0f,1.0f},WHITE);
+                DrawModelEx(torus,{-7.0,0.0,0.0},{1.0f,1.0f,-10.0f},time*85,{1.0f,1.0f,1.0f},WHITE);
+                DrawModelEx(torus,{-10.0,0.0,0.0},{1.0f,-1.0f,0.0f},time*100,{1.0f,1.0f,1.0f},WHITE);
+                DrawModelEx(torus,{4.0,0.0,0.0},{-1.0f,1.0f,0.0f},time*90,{1.0f,1.0f,1.0f},WHITE);
+                DrawModelEx(torus,{7.0,0.0,0.0},{1.0f,1.0f,0.0f},time*100,{1.0f,1.0f,1.0f},WHITE);
+                DrawModelEx(torus,{10.0,0.0,0.0},{1.0f,1.0f,0.0f},time*70,{1.0f,1.0f,1.0f},WHITE);
+            EndMode3D();
+        }
+    };
 
     // Run Window Loop
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+        time = GetTime();
         UpdateCamera(&cam);
-        float time = GetTime();
         SetShaderValue(basic_shader,shaderTimeLoc,&time,SHADER_UNIFORM_FLOAT);
         SetShaderValue(basic_shader,basic_shader.locs[SHADER_LOC_VECTOR_VIEW],&cam.position.x,SHADER_UNIFORM_VEC3);
 
@@ -120,7 +142,7 @@ int main(int argc, char* argv[])
         SetShaderValue(basic_shader,shaderSpecularExpLoc, &sv.specularExp, SHADER_UNIFORM_FLOAT);
         SetShaderValueV(basic_shader,shaderStrengthsLoc, &sv.strengths[0], SHADER_UNIFORM_FLOAT, 7);
         
-        shaderToTexture(basic_scene,basic_shader,buffer);
+        shaderToTexture(cube_scene,basic_shader,buffer);
        
         //Draw
         BeginDrawing();
@@ -130,8 +152,8 @@ int main(int argc, char* argv[])
             c = rlg::drawGUI(c);
 
             DrawText(TextFormat("Time: %f",time),10,GetScreenHeight()-50,20,LIME);
-            DrawText(TextFormat("x:%f y:%f z:%f",cam.position.x,cam.position.y,cam.position.z),150,GetScreenHeight()-50,20,LIME);
-            DrawText(TextFormat("%i",sv.shaderOptions),500,800,20,LIME);
+            //DrawText(TextFormat("x:%f y:%f z:%f",cam.position.x,cam.position.y,cam.position.z),150,GetScreenHeight()-50,20,LIME);
+            //DrawText(TextFormat("%i",sv.shaderOptions),500,800,20,LIME);
         EndDrawing();
       
     }
@@ -141,6 +163,7 @@ int main(int argc, char* argv[])
     UnloadTexture(checkerTexture);
     UnloadModel(sphere);
     UnloadModel(plane);
+    UnloadModel(torus);
     CloseWindow();
 
     return 0;

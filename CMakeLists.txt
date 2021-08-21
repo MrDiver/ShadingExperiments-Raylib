@@ -12,14 +12,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
 include(CMakeOptions.txt)
+#include(GNUInstallDirs)
 
-set(SOURCE_FILES
-    src/main.cpp
-)
+link_libraries(raylib)
+include_directories(include)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+#Add projects
+add_subdirectory(src/examples)
+
 #Add Raygui
 
 if(${USE_RAYGUI})
@@ -43,3 +43,7 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
 endif()
+
+macro(printProjectName)
+    message("Project Name:${PROJECT_NAME}")
+endmacro()

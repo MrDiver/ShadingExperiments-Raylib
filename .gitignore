@@ -1,4 +1,5 @@
 build/
-dist/rlProgram
+dist/
+include/
 .vscode
 external/
