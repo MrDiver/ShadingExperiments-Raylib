@@ -1,3 +1,8 @@
 ### Config options ###
 
 option(USE_RAYGUI "Download and include Raygui" ON)
+
+set(IMGUI_TAG "1.84.1")
+option(USE_IMGUI "Download and include Dear ImGUI" ON)
+
+option(FORCE_UPDATE "Redownload and configure all external dependencies" OFF)

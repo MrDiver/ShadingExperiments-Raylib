@@ -15,27 +15,70 @@ include(CMakeOptions.txt)
 #include(GNUInstallDirs)
 
 link_libraries(raylib)
-include_directories(include)
-
-#Add projects
-add_subdirectory(src/examples)
 
 #Add Raygui
 
+include(ExternalProject)
 if(${USE_RAYGUI})
     add_compile_definitions(USE_RAYGUI)
-    include(ExternalProject)
-    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/raygui")
+    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/external/raygui OR ${FORCE_UPDATE})
         ExternalProject_Add(raygui
-            GIT_REPOSITORY "https://github.com/raysan5/raygui"
+            GIT_REPOSITORY "https://github.com/raysan5/raygui.git"
             SOURCE_DIR "${PROJECT_SOURCE_DIR}/external/raygui"
             SOURCE_SUBDIR "projects/CMake"
             CMAKE_ARGS
                 -DBUILD_RAYGUI_EXAMPLES=OFF
-                -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}
+                -DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/include/raygui
         )
     endif()
+
+    include_directories(${PROJECT_SOURCE_DIR}/include/raygui/include)
 endif()
+
+#Add ImGui
+if(${USE_IMGUI})
+    #Check Version
+    add_custom_target(DearImGui ALL
+        ${PROJECT_SOURCE_DIR}/imgui_version.sh > ${PROJECT_SOURCE_DIR}/external/imgui.version
+        BYPRODUCTS ${PROJECT_SOURCE_DIR}/external/imgui.version
+                   ${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip
+                   ${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}
+    )
+    file(READ ${PROJECT_SOURCE_DIR}/external/imgui.version TMP1)
+    string(STRIP ${TMP1} TMP2)
+    string(COMPARE EQUAL "v${IMGUI_TAG}" "${TMP2}" isTrue)
+    if(${isTrue} EQUAL 1)
+        message("Your Version of Dear ImGUI is up to date VERSION ${TMP2}")
+    endif()
+    if(${isTrue} EQUAL 0)
+        message(WARNING "Your Version of Dear ImGUI out of date NEWVERSION ${TMP2} please consider changing the tag in CMakeOptions.txt")
+    endif()
+
+    # Configure
+    add_compile_definitions(USE_IMGUI)
+    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip" OR ${FORCE_UPDATE})
+        message("Downloading Dear ImGui")
+        file(DOWNLOAD "https://github.com/ocornut/imgui/archive/refs/tags/v${IMGUI_TAG}.zip" "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip" SHOW_PROCRESS)
+    endif()
+
+    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}" AND EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip" OR ${FORCE_UPDATE})
+        file(ARCHIVE_EXTRACT INPUT "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip"
+            DESTINATION "${PROJECT_SOURCE_DIR}/external"
+            PATTERNS "*glfw.*" "imgui-${IMGUI_TAG}/imconfig.h" "imgui-${IMGUI_TAG}/imgui*.cpp" "imgui-${IMGUI_TAG}/imgui*.h" "*opengl3.cpp" "*opengl3.h"
+        )
+    endif()
+
+    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/include/imgui" OR ${FORCE_UPDATE})
+        file(COPY "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}/" DESTINATION "${PROJECT_SOURCE_DIR}/include/imgui")
+    endif()
+
+    include_directories(${PROJECT_SOURCE_DIR}/include/imgui)
+endif()
+
+
+#Add projects
+add_subdirectory(src/examples)
+
 
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
 if (APPLE)
@@ -43,7 +86,3 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
 endif()
-
-macro(printProjectName)
-    message("Project Name:${PROJECT_NAME}")
-endmacro()

@@ -1,8 +1,9 @@
 set(EXAMPLE_DIRS
+    0_Test_ImGUI
     1_basic_phong
 )
 
-macro(configureProject LOCAL_PROJECT_NAME)
+function(configureProject LOCAL_PROJECT_NAME)
     project(${LOCAL_PROJECT_NAME})
     file(GLOB_RECURSE SOURCE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" CONFIGURE_DEPENDS ${PROJECT_NAME}/*.cpp ${PROJECT_NAME}/*.c)
     file(GLOB_RECURSE HEADER_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" CONFIGURE_DEPENDS ${PROJECT_NAME}/*.hpp ${PROJECT_NAME}/*.h)
@@ -16,8 +17,7 @@ macro(configureProject LOCAL_PROJECT_NAME)
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/${RESOURCE}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${RESOURCE}")
     endforeach()
 
-    set_property(DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-endmacro()
+endfunction()
 
 foreach(DIR ${EXAMPLE_DIRS})
     configureProject(${DIR})

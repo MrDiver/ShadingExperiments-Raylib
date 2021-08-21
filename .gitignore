@@ -3,3 +3,5 @@ dist/
 include/
 .vscode
 external/
+.kdev4/
+**.kdev4
