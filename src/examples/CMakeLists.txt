@@ -1,6 +1,7 @@
 set(EXAMPLE_DIRS
     0_Test_ImGUI
     1_basic_phong
+    2_phong_with_materials
 )
 
 function(configureProject LOCAL_PROJECT_NAME)
