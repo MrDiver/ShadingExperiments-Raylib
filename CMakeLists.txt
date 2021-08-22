@@ -14,7 +14,7 @@ set(CMAKE_BUILD_TYPE Debug)
 include(CMakeOptions.txt)
 #include(GNUInstallDirs)
 
-link_libraries(raylib)
+link_libraries(raylib ${CMAKE_DL_LIBS})
 
 #Add Raygui
 
@@ -56,19 +56,19 @@ if(${USE_IMGUI})
 
     # Configure
     add_compile_definitions(USE_IMGUI)
-    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip" OR ${FORCE_UPDATE})
+    if(${FORCE_UPDATE} OR (NOT EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip"))
         message("Downloading Dear ImGui")
         file(DOWNLOAD "https://github.com/ocornut/imgui/archive/refs/tags/v${IMGUI_TAG}.zip" "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip" SHOW_PROCRESS)
     endif()
 
-    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}" AND EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip" OR ${FORCE_UPDATE})
+    if(${FORCE_UPDATE} OR (NOT EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}" AND EXISTS "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip"))
         file(ARCHIVE_EXTRACT INPUT "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}.zip"
             DESTINATION "${PROJECT_SOURCE_DIR}/external"
-            PATTERNS "*glfw.*" "imgui-${IMGUI_TAG}/imconfig.h" "imgui-${IMGUI_TAG}/imgui*.cpp" "imgui-${IMGUI_TAG}/imgui*.h" "*opengl3.cpp" "*opengl3.h"
+            PATTERNS "*glfw.*" "imgui-${IMGUI_TAG}/imconfig.h" "imgui-${IMGUI_TAG}/imgui*.cpp" "imgui-${IMGUI_TAG}/imgui*.h" "imgui-${IMGUI_TAG}/imstb*.h" "*opengl3.cpp" "*opengl3.h" "*opengl3_loader.h"
         )
     endif()
 
-    if(NOT EXISTS "${PROJECT_SOURCE_DIR}/include/imgui" OR ${FORCE_UPDATE})
+    if(${FORCE_UPDATE} OR (NOT EXISTS "${PROJECT_SOURCE_DIR}/include/imgui" OR ${FORCE_UPDATE}))
         file(COPY "${PROJECT_SOURCE_DIR}/external/imgui-${IMGUI_TAG}/" DESTINATION "${PROJECT_SOURCE_DIR}/include/imgui")
     endif()
 

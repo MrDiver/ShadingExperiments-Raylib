@@ -1,28 +1,13 @@
 #include "raylib.h"
 #include "raymath.h"
-
-// Include ImGui
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "rlgl.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
-// Custom Includes
-#include <functional>
-
-typedef struct Scene{
-    std::function<void()> render;
-} Scene;
-
-void shaderToTexture(Scene scene, Shader shader, RenderTexture2D buffer){
-    BeginTextureMode(buffer);
-        BeginShaderMode(shader);
-            scene.render();
-        EndShaderMode();
-    EndTextureMode();
-}
+// Include ImGui
+#include "raylib_imgui.h"
+using namespace rlImGui;
 
 int main(int argc, char* argv[])
 {
@@ -33,6 +18,9 @@ int main(int argc, char* argv[])
 
     // Create a Fullscreen window
     InitWindow(0, 0, "Raylib Template Project");
+    ImGuiIO& io = InitImGui();
+
+    bool show_demo_window = true;
 
     // Run Window Loop
     SetTargetFPS(60);
@@ -43,10 +31,21 @@ int main(int argc, char* argv[])
             ClearBackground(BLACK);
 
             DrawText("Hello World",100,100,20,WHITE);
+            DrawCircle(500,500,200,GRAY);
+
+            BeginModeImGui();
+                //DrawImGuiStuff
+                if (show_demo_window)
+                    ImGui::ShowDemoWindow(&show_demo_window);
+            EndModeImGui();
+
+
+            DrawText("Im Over ImGUI WUUUUU",500,100,20,WHITE);
+
         EndDrawing();
-      
     }
 
+    ShutdownImGui();
     CloseWindow();
 
     return 0;
