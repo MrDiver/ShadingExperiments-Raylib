@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.21)
 project(rlProgram)
 
 find_package(raylib 3.7.0 REQUIRED)
@@ -14,7 +14,7 @@ set(CMAKE_BUILD_TYPE Debug)
 include(CMakeOptions.txt)
 #include(GNUInstallDirs)
 
-link_libraries(raylib ${CMAKE_DL_LIBS})
+link_libraries(raylib)
 
 #Add Raygui
 
@@ -73,6 +73,10 @@ if(${USE_IMGUI})
     endif()
 
     include_directories(${PROJECT_SOURCE_DIR}/include/imgui)
+
+    include_directories(${PROJECT_SOURCE_DIR}/lib/rlImGui)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/lib/rlImGui/)
+    link_libraries(RaylibImGui)
 endif()
 
 
